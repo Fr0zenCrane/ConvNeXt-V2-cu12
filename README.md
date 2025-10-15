@@ -1,3 +1,59 @@
+## Note
+ConvNeXt V2 provides strong visual representations via self-supervised training with the Fully Convolutional Masked AutoEncoder (FCMAE). However, one of its key dependencies—MinkowskiEngine—has been discontinued, and PyTorch has evolved to the 2.x era. As a result, it’s no longer feasible to pretrain ConvNeXt V2 with FCMAE on your own data using the original environment with minimal changes. In practice, you’d need nontrivial modifications to both the codebase and MinkowskiEngine to get pretraining working.
+
+To address this, I’m open-sourcing this repository and documenting the setup so you don’t have to go through that pain. This repo enables pretraining ConvNeXt under CUDA 12.x and PyTorch 2.x, aligning with modern, commonly used environments.
+
+Important note: If your goal is only to finetune a pretrained ConvNeXt V2 model using supervised learning, you likely don’t need this repository. This repo is primarily for those who want to run FCMAE-style pretraining.
+
+### Setup
+
+Install pytorch and openblas-devel
+
+```python
+pip install pytorch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0
+conda install -y openblas-devel -c anaconda
+
+```
+
+Verify GCC version
+
+```
+gcc --version
+g++ --version
+```
+
+* Use GCC <= 12 for building with CUDA 12
+* Use GCC <= 10 for building with CUDA 11
+
+Be careful when running `sudo apt update` since it will make you install GCC 13. You will need to temporary export the environment for building with a different GCC version
+
+```
+export CC=gcc-12
+export CXX=g++-12
+```
+
+Ensure dependencies are met
+
+```
+sudo apt install -y build-essential cmake libopenblas-dev
+```
+
+Clone this repo and install the provided MinkowskiEngine package that support both cu12.x environment and depth-wise convolutions. 
+
+```
+git clone https://github.com/Fr0zenCrane/ConvNeXt-V2-cu12.git
+cd ConvNeXt-V2-cu12/MinkowskiEngine
+python setup.py install --blas=openblas 
+```
+
+## Troubleshooting
+If you encounter other problem, it should not related to the code itself but your environment, please refer to [CiSong10/MinkowskiEngine/](https://github.com/CiSong10/MinkowskiEngine/)
+
+### Acknowledgement
+
+- [CiSong10/MinkowskiEngine/](https://github.com/CiSong10/MinkowskiEngine/) offers comprehensive guidance on installing and configuring MinkowskiEngine across different PyTorch and CUDA environments.
+- [facebookresearch/ConvNeXt-V2](https://github.com/facebookresearch/ConvNeXt-V2/) is the official PyTorch implementation of ConvNeXt V2. This repo is a cuda 12.x and torch 2.x friendly banch of this codebase.
+
 ## ConvNeXt V2<br><sub>Official PyTorch Implementation</sub>
 
 This repo contains the PyTorch version of *8* model definitions (*Atto, Femto, Pico, Nano, Tiny, Base, Large, Huge*), pre-training/fine-tuning code and pre-trained weights (converted from JAX weights trained on TPU) for our ConvNeXt V2 paper.
