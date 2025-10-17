@@ -42,7 +42,9 @@ Clone this repo and install the provided MinkowskiEngine package that support bo
 
 ```
 git clone https://github.com/Fr0zenCrane/ConvNeXt-V2-cu12.git
-cd ConvNeXt-V2-cu12/MinkowskiEngine
+cd ConvNeXt-V2-cu12/
+unzip MinkowskiEngine.zip
+cd MinkowskiEngine
 python setup.py install --blas=openblas 
 ```
 
